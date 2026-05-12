@@ -1,11 +1,11 @@
 WAR OF DOTS
 =====
 
-War of Dots is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/
+War of Dots is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots .
 
 
-Feel free to start issues, I will see and will fix (or at least respond).
-Feel free to contribute on the suggestion branch.
+Feel free to start issues.
+Feel free to contribute.
 
 TODO
 ====
@@ -35,12 +35,31 @@ Suggestions (just edit to add suggestions, I'll put them in long or short term):
 ---
 
 
+Installation:
+=====================
+
+Just download install_wod.sh for linux and execute it. Every file needed will be downloaded and installed directly.
+Else: 
+
+1.Download the zip 
+or
+execute: 
+
+git clone https://github.com/Keruki2005/War-of-dots-fork.git 
+
+cd War-of-dots-fork
+
+./dependencies.sh
+
+source venv/bin/activate
+
+
 INSTRUCTIONS TO PLAY:
 =====================
- - start server and enter number of players
+ - start server and enter number of players (run wod_server.py)
  - enter port, just enter 0, use other numbers when you think other people are playing the game on the same lan/router/network
  - should say waiting for players, will connect with first `PLAYERS` (number of players you entered) number of clients
- - start the clients
+ - start the clients (wod_client.py)
  - on each client type in the ip address then the port number you typed in the server (e.g. '0')
  - start playing when the pygame window pops up by pressing `p` to unpause, have fun!
 

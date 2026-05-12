@@ -49,13 +49,13 @@ or
 
 2.execute: 
 
-git clone https://github.com/Keruki2005/War-of-dots-fork.git 
+`git clone https://github.com/Keruki2005/War-of-dots-fork.git`
 
-cd War-of-dots-fork
+`cd War-of-dots-fork`
 
-./dependencies.sh
+`./dependencies.sh`
 
-source venv/bin/activate
+`source venv/bin/activate`
 
 
 INSTRUCTIONS TO PLAY:

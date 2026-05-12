@@ -38,12 +38,16 @@ Suggestions (just edit to add suggestions, I'll put them in long or short term):
 Installation:
 =====================
 
-Just download install_wod.sh for linux and execute it. Every file needed will be downloaded and installed directly.
+Just download install_wod.sh for linux and execute it.
+Every file needed will be downloaded and installed directly.
+
 Else: 
 
-1.Download the zip 
+1.Download the zip and find your own way...
+
 or
-execute: 
+
+2.execute: 
 
 git clone https://github.com/Keruki2005/War-of-dots-fork.git 
 

@@ -142,6 +142,53 @@ class WorldInfo:
         self.world_x, self.world_y = self.size
 
 
+@dataclass
+class Troop:
+    """Represents a troop in the game world."""
+
+    position: Coordinate
+    owner: object
+    path: list = None
+    health: int = TROOP_HEALTH
+
+    def __post_init__(self) -> None:
+        """Initializes the troop's ID and path if not set."""
+        if self.path is None:
+            self.path = []
+        self.id = id(self)
+
+
+@dataclass
+class City:
+    """Represents a city in the game world."""
+
+    position: Coordinate
+    timer: int = 0
+    owner: object = None
+
+    def __post_init__(self) -> None:
+        """Initializes the city's ID and path."""
+        self.id = id(self)
+        self.path = []
+
+
+class Player:
+    """Represents a player in the game world, including their starting position, troops, vision, and border."""
+
+    def __init__(self, start_pos, environment) -> None:
+        """Initializes the player with a starting position, creates an initial troop for the player,
+        and sets up the vision and border grids based on the environment's default vision.
+
+        Args:
+            start_pos (_type_): The starting position of the player in the world
+            environment (_type_): The environment object that contains default vision data
+        """
+        self.start_pos = start_pos
+        self.troops = [Troop(self.start_pos, self)]
+        self.border = nd_zeros()
+        self.vision = environment.default_vision.copy()
+
+
 class Brush:
     """Represents a brush that can be applied to a grid to modify its values in a circular area."""
 
@@ -863,53 +910,6 @@ class Environment:
                         )
                     )
                     city.timer = 0
-
-
-@dataclass
-class Troop:
-    """Represents a troop in the game world."""
-
-    position: Coordinate
-    owner: object
-    path: list = None
-    health: int = TROOP_HEALTH
-
-    def __post_init__(self) -> None:
-        """Initializes the troop's ID and path if not set."""
-        if self.path is None:
-            self.path = []
-        self.id = id(self)
-
-
-@dataclass
-class City:
-    """Represents a city in the game world."""
-
-    position: Coordinate
-    timer: int = 0
-    owner: object = None
-
-    def __post_init__(self) -> None:
-        """Initializes the city's ID and path."""
-        self.id = id(self)
-        self.path = []
-
-
-class Player:
-    """Represents a player in the game world, including their starting position, troops, vision, and border."""
-
-    def __init__(self, start_pos, environment) -> None:
-        """Initializes the player with a starting position, creates an initial troop for the player,
-        and sets up the vision and border grids based on the environment's default vision.
-
-        Args:
-            start_pos (_type_): The starting position of the player in the world
-            environment (_type_): The environment object that contains default vision data
-        """
-        self.start_pos = start_pos
-        self.troops = [Troop(self.start_pos, self)]
-        self.border = nd_zeros()
-        self.vision = environment.default_vision.copy()
 
 
 class Game:

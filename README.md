@@ -1,7 +1,7 @@
-WAR OF DOTS
+BATTLE OF DOTS
 =====
 
-War of Dots is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots .
+BATTLE OF DOTS is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots .
 
 
 Feel free to start issues.
@@ -38,34 +38,33 @@ Suggestions (just edit to add suggestions, I'll put them in long or short term):
 Installation:
 =====================
 
-Just download install_wod.sh for linux and execute it.
-Every file needed will be downloaded and installed directly.
+`pipx install git+https://github.com/Keruki2005/battle-of-dots.git`
 
-Else: 
+Make sure you have [pipx](https://github.com/pypa/pipx) installed.
 
-1.Download the zip and find your own way...
+Run with `bod` in the terminal.
 
-or
-
-2.execute: 
-
-`git clone https://github.com/Keruki2005/War-of-dots-fork.git`
-
-`cd War-of-dots-fork`
-
-`./dependencies.sh`
-
-`source venv/bin/activate`
-
-
-INSTRUCTIONS TO PLAY:
+INSTRUCTIONS TO PLAY (old)
 =====================
- - start server and enter number of players (run wod_server.py)
+ - start server and enter number of players (run bod_server.py)
  - enter port, just enter 0, use other numbers when you think other people are playing the game on the same lan/router/network
  - should say waiting for players, will connect with first `PLAYERS` (number of players you entered) number of clients
- - start the clients (wod_client.py)
+ - start the clients (bod_client.py)
  - on each client type in the ip address then the port number you typed in the server (e.g. '0')
  - start playing when the pygame window pops up by pressing `p` to unpause, have fun!
+
+INSTRUCTIONS TO PLAY (new)
+=====================
+- run ´bod´ in your terminal
+# - if you want to host a game, press ´1´
+- enter number of players
+- enter port to use (i.e. port 2)
+- wait for players to connect
+# -if you want to join a game, press ´2´
+- enter the ip-address of your host
+- enter the port, your host uses
+- start playing
+
 
 Controls
 ======

@@ -10,8 +10,9 @@ import math
 import numpy as np
 import random
 
-import simple_socket
-from constants import (
+import src.simple_socket as simple_socket
+
+from src.constants import (
     ATTACK_DIST,
     BORDER_HEALING_MOD,
     CELL_SIZE,
@@ -911,6 +912,8 @@ class Environment:
                     )
                     city.timer = 0
 
+ # Hier liegt der Fehler: socket.gethostbyname(str(socket.gethostname())) sorgt dafür, dass 127.0.1.1 als ip benutzt wird.
+ # Vorschlag: self.server = simple_socket.Server("0.0.0.0", PORTS[0])
 
 class Game:
     def __init__(self) -> None:
@@ -1081,7 +1084,8 @@ class Game:
         ]
 
 
-if __name__ == "__main__":
+def main():
+    global world_info
     try:
         players = int(input("Enter number of players (2-6): "))
         if players < 2 or players > 6:
@@ -1093,3 +1097,6 @@ if __name__ == "__main__":
         world_info = WorldInfo(2)
     game_play = Game()
     game_play.run_game()
+
+if __name__ == "__main__":
+    main()

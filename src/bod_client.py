@@ -4,7 +4,7 @@ import orjson
 import math
 import numpy as np
 
-from constants import (
+from src.constants import (
     CITY_COLOR,
     CITY_R,
     HILL,
@@ -26,7 +26,7 @@ from constants import (
     TROOP_R,
     WATER,
 )
-import simple_socket
+import src.simple_socket as simple_socket
 
 
 def dir_dis_to_xy(direction: float, distance: float) -> tuple:
@@ -1037,7 +1037,7 @@ class Game:
         fog.blit(text_surface, (10, 10))
 
 
-if __name__ == "__main__":
+def main():
     while True:
         try:
             game_play = Game("WAR OF DOTS")
@@ -1046,3 +1046,7 @@ if __name__ == "__main__":
             print(f"an error occurred: {e}")
             pygame.quit()
         input("game over, press enter to continue")
+
+if __name__ == "__main__":
+    main()
+

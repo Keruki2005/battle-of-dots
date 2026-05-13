@@ -44,7 +44,7 @@ Make sure you have [pipx](https://github.com/pypa/pipx) installed.
 
 Run with `bod` in the terminal.
 
-INSTRUCTIONS TO PLAY:
+INSTRUCTIONS TO PLAY (old)
 =====================
  - start server and enter number of players (run bod_server.py)
  - enter port, just enter 0, use other numbers when you think other people are playing the game on the same lan/router/network
@@ -52,6 +52,13 @@ INSTRUCTIONS TO PLAY:
  - start the clients (bod_client.py)
  - on each client type in the ip address then the port number you typed in the server (e.g. '0')
  - start playing when the pygame window pops up by pressing `p` to unpause, have fun!
+
+INSTRUCTIONS TO PLAY (new)
+=====================
+-
+-
+-
+-
 
 Controls
 ======

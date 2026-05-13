@@ -38,25 +38,11 @@ Suggestions (just edit to add suggestions, I'll put them in long or short term):
 Installation:
 =====================
 
-Just download install_wod.sh for linux and execute it.
-Every file needed will be downloaded and installed directly.
+`pipx install git+https://github.com/Keruki2005/battle-of-dots.git`
 
-Else: 
+Make sure you have [pipx](https://github.com/pypa/pipx) installed.
 
-1.Download the zip and find your own way...
-
-or
-
-2.execute: 
-
-`git clone https://github.com/Keruki2005/War-of-dots-fork.git`
-
-`cd War-of-dots-fork`
-
-`./dependencies.sh`
-
-`source venv/bin/activate`
-
+Run with `bod` in the terminal.
 
 INSTRUCTIONS TO PLAY:
 =====================

@@ -1,7 +1,7 @@
-WAR OF DOTS
+BATTLE OF DOTS
 =====
 
-War of Dots is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots .
+BATTLE OF DOTS is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots .
 
 
 Feel free to start issues.
@@ -46,10 +46,10 @@ Run with `bod` in the terminal.
 
 INSTRUCTIONS TO PLAY:
 =====================
- - start server and enter number of players (run wod_server.py)
+ - start server and enter number of players (run bod_server.py)
  - enter port, just enter 0, use other numbers when you think other people are playing the game on the same lan/router/network
  - should say waiting for players, will connect with first `PLAYERS` (number of players you entered) number of clients
- - start the clients (wod_client.py)
+ - start the clients (bod_client.py)
  - on each client type in the ip address then the port number you typed in the server (e.g. '0')
  - start playing when the pygame window pops up by pressing `p` to unpause, have fun!
 

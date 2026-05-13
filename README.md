@@ -55,10 +55,16 @@ INSTRUCTIONS TO PLAY (old)
 
 INSTRUCTIONS TO PLAY (new)
 =====================
--
--
--
--
+- run ´bod´ in your terminal
+# - if you want to host a game, press ´1´
+- enter number of players
+- enter port to use (i.e. port 2)
+- wait for players to connect
+# -if you want to join a game, press ´2´
+- enter the ip-address of your host
+- enter the port, your host uses
+- start playing
+
 
 Controls
 ======

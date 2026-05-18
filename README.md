@@ -12,18 +12,18 @@ TODO
 | Priority    | Task                                | Details / Examples |
 |-------------|-------------------------------------|--------------------|
 | Short term  | Send global stats to client         | `{"cities owned":[# per player], "troops owned":[# per player], "total damage":[# per player], "current winner": <id>}` |
-| Short term  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}` |
-| Short term  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}` |
-| Short term  | Win condition & client UI           | Client continuously reads `current winner` and displays final result |
-| Long term   | Playtest & refine constants         | Balancing through playtesting |
-| Long term   | Add strategy information            | e.g., recommended moves, AI heuristics |
-| Long term   | Use NumPy better                    | Performance optimizations |
-| Long term   | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync |
-| Long term   | Map making / editor                 | GUI editor, procedural generators, seed saving |
-| Long term   | Save seed + city layout             | Export/import seeds and layouts |
-| Long term   | Save & load game state              | Checkpoints, save files |
-| Long term   | More visual features                | UI/UX improvements, effects |
-Short term:
+| Short term  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}`          |
+| Short term  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}`                                                   |
+| Short term  | Win condition & client UI           | Client continuously reads `current winner` and displays final result                                                    |
+| Long term   | Playtest & refine constants         | Balancing through playtesting                                                                                           |
+| Long term   | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |
+| Long term   | Use NumPy better                    | Performance optimizations                                                                                               |
+| Long term   | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |
+| Long term   | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |
+| Long term   | Save seed + city layout             | Export/import seeds and layouts                                                                                         |
+| Long term   | Save & load game state              | Checkpoints, save files                                                                                                 |
+| Long term   | More visual features                | UI/UX improvements, effects                                                                                             |
+Short term:                               
 
 
  - Add stats dictionary to the info that's sent to client (e.g. {"cities owned":[_number of cities owned for each player_], "troops owned":[_number of troops owned for each player_], "total damage":[_total damage dealt this server frame for each player_], "current winner":_current winner_} ect)

@@ -9,20 +9,20 @@ Feel free to contribute.
 
 TODO
 ====
-| Priority    | Task                                | Details / Examples                                                                                                      | 
-|-------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
-| 9  | Send global stats to client         | `{"cities owned":[# per player], "troops owned":[# per player], "total damage":[# per player], "current winner": <id>}` |
-| 9  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}`          |
-| 9  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}`                                                   |
-| 9  | Win condition & client UI           | Client continuously reads `current winner` and displays final result                                                    |
-| 1  | Playtest & refine constants         | Balancing through playtesting                                                                                           |
-| 1  | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |
-| 1  | Use NumPy better                    | Performance optimizations                                                                                               |
-| 1  | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |
-| 1  | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |
-| 1  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |
-| 1  | Save & load game state              | Checkpoints, save files                                                                                                 |
-| 1  | More visual features                | UI/UX improvements, effects                                                                                             |
+| Priority    | Task                                | Details / Examples                                                                                             | Status  | 
+|-------------|-------------------------------------|----------------------------------------------------------------------------------------------------------------|---------|
+| 3  | Send global stats to client         | `{"cities owned":[# per player], "troops owned":[# per player], "total damage":[# per player], "current winner": <id>}` |?
+| 3  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}`          |?
+| 3  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}`                                                   |?
+| 4  | Win condition & client UI           | Client continuously reads `current winner` and displays final result                                                    |?
+| 9  | Playtest & refine constants         | Balancing through playtesting                                                                                           |?
+| 9  | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |?
+| 1  | Use NumPy better                    | Performance optimizations                                                                                               |ß
+| 6  | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |?
+| 8  | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |?
+| 7  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |?
+| 7  | Save & load game state              | Checkpoints, save files                                                                                                 |?
+| 4  | More visual features                | UI/UX improvements, effects                                                                                             |?
                                
 
 

@@ -17,19 +17,17 @@ TODO
 | 4  | Win condition & client UI           | Client continuously reads `current winner` and displays final result                                                    |?
 | 9  | Playtest & refine constants         | Balancing through playtesting                                                                                           |?
 | 9  | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |?
-| 1  | Use NumPy better                    | Performance optimizations                                                                                               |ß
-| 6  | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |?
+| 1  | Use NumPy better                    | Performance optimizations                                                                                               |?
+| 10  | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |under development
 | 8  | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |?
 | 7  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |?
 | 7  | Save & load game state              | Checkpoints, save files                                                                                                 |?
 | 4  | More visual features                | UI/UX improvements, effects                                                                                             |?
+| 4  | More Units                          | Tanks, Fast Tanks, Infantry, Light Radar Infantry                                                                       |?
                                
 
-----
+(just edit to add suggestions)
 
-
-Suggestions (just edit to add suggestions, I'll put them in long or short term):
----
 
 
 Installation:

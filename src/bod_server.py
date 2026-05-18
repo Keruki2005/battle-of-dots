@@ -914,7 +914,7 @@ class Environment:
 
  # Hier liegt der Fehler: socket.gethostbyname(str(socket.gethostname())) sorgt dafür, dass 127.0.1.1 als ip benutzt wird.
  # Vorschlag: self.server = simple_socket.Server("0.0.0.0", PORTS[0])
-
+ 
 class Game:
     def __init__(self) -> None:
         """Initializes the game, setting up the server, environment, player inputs, and threading events for synchronization."""
@@ -923,7 +923,7 @@ class Game:
         self.frame_time = 1 / self.FPS
         self.done = False
         self.server = simple_socket.Server(
-            socket.gethostbyname(str(socket.gethostname())), PORTS[0]
+            "0.0.0.0", PORTS[0]
         )
         self.environment = Environment()
         self.player_inputs = [[] for i in range(world_info.players)]

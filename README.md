@@ -9,8 +9,8 @@ Feel free to contribute.
 
 TODO
 ====
-| Priority    | Task                                | Details / Examples |
-|-------------|-------------------------------------|--------------------|
+| Priority    | Task                                | Details / Examples | Priority                                                                                           |
+|-------------|-------------------------------------|--------------------|----------------------------------------------------------------------------------------------------|
 | Short term  | Send global stats to client         | `{"cities owned":[# per player], "troops owned":[# per player], "total damage":[# per player], "current winner": <id>}` |
 | Short term  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}`          |
 | Short term  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}`                                                   |

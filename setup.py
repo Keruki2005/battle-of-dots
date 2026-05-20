@@ -4,19 +4,19 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name="battle-of-dots-experimental",
+    name="battle-of-dots",
     version="0.0.7",
     description="Battle of Dots is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to",
     author="Keruki2005",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="https://github.com/Keruki2005/battle-of-dots-experimental",
+    url="https://github.com/Keruki2005/battle-of-dots",
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
     python_requires=">=3.10",
     packages=['src'],
-    py_modules=["bode"],
+    py_modules=["bod"],
     install_requires=[
         'pygame-ce',
         'orjson',
@@ -25,7 +25,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "bode=bode:main",
+            "bod=bod:main",
         ],
     },
 )

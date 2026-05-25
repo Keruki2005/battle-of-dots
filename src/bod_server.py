@@ -10,9 +10,11 @@ import math
 import numpy as np
 import random
 
-import src.simple_socket as simple_socket
+import src.bod_simple_socket as bod_simple_socket
 
-from src.constants import (
+from src.bod_map_io import choose_map_interactive, validate_map_for_play
+
+from src.bod_constants import (
     ATTACK_DIST,
     BORDER_HEALING_MOD,
     CELL_SIZE,
@@ -121,14 +123,25 @@ class WorldInfo:
     """Holds information about the world size and player count,
     and calculates the world size based on the player count."""
 
-    def __init__(self, players: int) -> None:
+    def __init__(self, players: int, map_data: dict | None = None) -> None:
         """Initializes the WorldInfo with the number of players and calculates the world size.
 
         Args:
             players (int): The number of players in the world
+            map_data (dict | None): Optional saved map with fixed dimensions
         """
         self.players = players
-        self.calculate_size()
+        if map_data is not None:
+            self.rows = map_data["rows"]
+            self.cols = map_data["cols"]
+            self.world_x = map_data["world_x"]
+            self.world_y = map_data["world_y"]
+            self.size = Coordinate(self.world_x, self.world_y)
+            self.area = self.world_x * self.world_y
+            self.width = self.world_x
+            self.height = self.world_y
+        else:
+            self.calculate_size()
 
     def calculate_size(self) -> None:
         """Calculates the world size based on the number of players,
@@ -252,7 +265,7 @@ class Brush:
 class Environment:
     """Represents the game environment, including terrain, cities, players, and troops."""
 
-    def __init__(self) -> None:
+    def __init__(self, map_data: dict | None = None) -> None:
         """Initializes the Environment, generating the terrain and cities,
         and assigning players to cities based on the world information.
         """
@@ -263,7 +276,10 @@ class Environment:
 
         self.default_vision = nd_zeros()
 
-        self.generate_terrain()
+        if map_data is not None:
+            self.load_from_map(map_data)
+        else:
+            self.generate_terrain()
         self.generate_default_vision()
         left_bottom_city = max(self.cities, key=lambda c: c.position.y - c.position.x)
         top_left_city = min(self.cities, key=lambda c: c.position.x + c.position.y)
@@ -346,6 +362,13 @@ class Environment:
         self.border_brush = Brush(TROOP_BORDER_RADIUS, 0.05)
         self.city_border_brush = Brush(CITY_BORDER_RADIUS, 0.05)
         self.players_in_cities = [[] for _ in self.cities]
+
+    def load_from_map(self, map_data: dict) -> None:
+        """Loads terrain, forest, and cities from a saved map file."""
+        self.terrain_marching = np.asarray(map_data["terrain"], dtype=np.float32).copy()
+        self.forest_marching = np.asarray(map_data["forest"], dtype=np.float32).copy()
+        for pos in map_data["cities"]:
+            self.cities.append(City(Coordinate(float(pos[0]), float(pos[1]))))
 
     def generate_terrain(self) -> None:
         """Generates the terrain and forest grids using Perlin noise,
@@ -913,19 +936,19 @@ class Environment:
                     city.timer = 0
 
  # Hier liegt der Fehler: socket.gethostbyname(str(socket.gethostname())) sorgt dafür, dass 127.0.1.1 als ip benutzt wird.
- # Vorschlag: self.server = simple_socket.Server("0.0.0.0", PORTS[0])
+ # Vorschlag: self.server = bod_simple_socket.Server("0.0.0.0", PORTS[0])
  
 class Game:
-    def __init__(self) -> None:
+    def __init__(self, map_data: dict | None = None) -> None:
         """Initializes the game, setting up the server, environment, player inputs, and threading events for synchronization."""
         self.FPS = SERVER_FPS
         self.last_time = time.perf_counter()
         self.frame_time = 1 / self.FPS
         self.done = False
-        self.server = simple_socket.Server(
+        self.server = bod_simple_socket.Server(
             "0.0.0.0", PORTS[0]
         )
-        self.environment = Environment()
+        self.environment = Environment(map_data=map_data)
         self.player_inputs = [[] for i in range(world_info.players)]
         self.player_city_inputs = [[] for i in range(world_info.players)]
         self.player_pause_requests = [
@@ -1084,18 +1107,43 @@ class Game:
         ]
 
 
-def main():
+def main(map_data: dict | None = None):
     global world_info
-    try:
-        players = int(input("Enter number of players (2-6): "))
-        if players < 2 or players > 6:
+    if map_data is not None:
+        players = map_data["players"]
+        errors = validate_map_for_play(map_data)
+        if errors:
+            for err in errors:
+                print(f"Warning: {err}")
+        world_info = WorldInfo(players, map_data=map_data)
+        print(f"Loaded map: {map_data.get('name', 'custom')}")
+    else:
+        try:
+            players = int(input("Enter number of players (2-6): "))
+            if players < 2 or players > 6:
+                print("Invalid number of players, defaulting to 2")
+                players = 2
+        except ValueError:
             print("Invalid number of players, defaulting to 2")
             players = 2
-        world_info = WorldInfo(players)
-    except ValueError:
-        print("Invalid number of players, defaulting to 2")
-        world_info = WorldInfo(2)
-    game_play = Game()
+        print("\nMap type:")
+        print("  1. Random generated island")
+        print("  2. Load saved map")
+        map_choice = input("> ").strip()
+        loaded = None
+        if map_choice == "2":
+            loaded = choose_map_interactive()
+            if loaded is None:
+                print("No map selected, using random generation.")
+            elif loaded["players"] != players:
+                print(
+                    f"Map is for {loaded['players']} players; "
+                    f"using map player count instead of {players}."
+                )
+                players = loaded["players"]
+        world_info = WorldInfo(players, map_data=loaded)
+        map_data = loaded
+    game_play = Game(map_data=map_data)
     game_play.run_game()
 
 if __name__ == "__main__":

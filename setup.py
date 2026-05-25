@@ -4,7 +4,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name="battle-of-dots",
+    name="battle-of-dots-experimental",
     version="0.0.7",
     description="Battle of Dots is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to",
     author="Keruki2005",
@@ -26,6 +26,7 @@ setup(
     entry_points={
         "console_scripts": [
             "bod=bod:main",
+            "bod-map-editor=src.bod_map_editor:main",
         ],
     },
 )

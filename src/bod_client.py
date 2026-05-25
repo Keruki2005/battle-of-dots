@@ -4,7 +4,7 @@ import orjson
 import math
 import numpy as np
 
-from src.constants import (
+from src.bod_constants import (
     CITY_COLOR,
     CITY_R,
     HILL,
@@ -26,7 +26,7 @@ from src.constants import (
     TROOP_R,
     WATER,
 )
-import src.simple_socket as simple_socket
+import src.bod_simple_socket
 
 
 def dir_dis_to_xy(direction: float, distance: float) -> tuple:
@@ -289,7 +289,7 @@ class Game:
         print("connecting...")
         while True:
             try:
-                self.client = simple_socket.Client(
+                self.client = src.bod_simple_socket.Client(
                     ip, PORTS[min(99, max(0, int(port)))]
                 )
                 self.client.connect()
@@ -318,6 +318,13 @@ class Game:
             self.client.close()
             raise
         self.world_info = WorldInfo(players)
+        self.world_info.rows = self.terrain_grid.shape[0] - 1
+        self.world_info.cols = self.terrain_grid.shape[1] - 1
+        self.world_info.size = (
+            self.world_info.rows * CELL_SIZE,
+            self.world_info.cols * CELL_SIZE,
+        )
+        self.world_info.world_x, self.world_info.world_y = self.world_info.size
         pygame.init()
         info_object = pygame.display.Info()
         desktop_width = info_object.current_w

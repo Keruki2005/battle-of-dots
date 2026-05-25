@@ -10,11 +10,11 @@ import math
 import numpy as np
 import random
 
-import src.bode_simple_socket as bode_simple_socket
+import src.bod_simple_socket as bod_simple_socket
 
-from src.bode_map_io import choose_map_interactive, validate_map_for_play
+from src.bod_map_io import choose_map_interactive, validate_map_for_play
 
-from src.bode_constants import (
+from src.bod_constants import (
     ATTACK_DIST,
     BORDER_HEALING_MOD,
     CELL_SIZE,
@@ -936,7 +936,7 @@ class Environment:
                     city.timer = 0
 
  # Hier liegt der Fehler: socket.gethostbyname(str(socket.gethostname())) sorgt dafür, dass 127.0.1.1 als ip benutzt wird.
- # Vorschlag: self.server = bode_simple_socket.Server("0.0.0.0", PORTS[0])
+ # Vorschlag: self.server = bod_simple_socket.Server("0.0.0.0", PORTS[0])
  
 class Game:
     def __init__(self, map_data: dict | None = None) -> None:
@@ -945,7 +945,7 @@ class Game:
         self.last_time = time.perf_counter()
         self.frame_time = 1 / self.FPS
         self.done = False
-        self.server = bode_simple_socket.Server(
+        self.server = bod_simple_socket.Server(
             "0.0.0.0", PORTS[0]
         )
         self.environment = Environment(map_data=map_data)

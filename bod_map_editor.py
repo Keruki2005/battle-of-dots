@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 import pygame
 
-from src.bode_client import marching_squares_layers, marching_squares_poly
-from src.bode_constants import (
+from src.bod_client import marching_squares_layers, marching_squares_poly
+from src.bod_constants import (
     CELL_SIZE,
     CITIES_PER_PLAYER,
     CITY_COLOR,
@@ -21,7 +21,7 @@ from src.bode_constants import (
     TERRAIN_TYPES,
     WATER,
 )
-from src.bode_map_io import (
+from src.bod_map_io import (
     FOREST_CLEAR,
     FOREST_PAINT,
     TERRAIN_PAINT,
@@ -224,7 +224,7 @@ class MapEditor:
 
         import perlin_noise
 
-        from src.bode_constants import CITY_DISTANCE, CITY_PLACE_TRIES, PLAINS, THRESHOLD
+        from src.bod_constants import CITY_DISTANCE, CITY_PLACE_TRIES, PLAINS, THRESHOLD
 
         players = self.data["players"]
         noise = perlin_noise.PerlinNoise(octaves=3)

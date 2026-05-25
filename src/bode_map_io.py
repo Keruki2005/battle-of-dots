@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import orjson
 
-from src.bode_constants import (
+from src.bod_constants import (
     AREA_PER_CITIES,
     CELL_SIZE,
     CITIES_PER_PLAYER,

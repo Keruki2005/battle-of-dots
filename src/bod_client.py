@@ -4,7 +4,7 @@ import orjson
 import math
 import numpy as np
 
-from src.bode_constants import (
+from src.bod_constants import (
     CITY_COLOR,
     CITY_R,
     HILL,
@@ -26,7 +26,7 @@ from src.bode_constants import (
     TROOP_R,
     WATER,
 )
-import src.bode_simple_socket
+import src.bod_simple_socket
 
 
 def dir_dis_to_xy(direction: float, distance: float) -> tuple:
@@ -289,7 +289,7 @@ class Game:
         print("connecting...")
         while True:
             try:
-                self.client = src.bode_simple_socket.Client(
+                self.client = src.bod_simple_socket.Client(
                     ip, PORTS[min(99, max(0, int(port)))]
                 )
                 self.client.connect()

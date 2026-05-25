@@ -10,13 +10,13 @@ setup(
     author="Keruki2005",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="https://github.com/Keruki2005/battle-of-dots-experimental",
+    url="https://github.com/Keruki2005/battle-of-dots",
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
     python_requires=">=3.10",
     packages=['src'],
-    py_modules=["bode"],
+    py_modules=["bod"],
     install_requires=[
         'pygame-ce',
         'orjson',
@@ -25,8 +25,8 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "bode=bode:main",
-            "bode-map-editor=src.bode_map_editor:main",
+            "bod=bod:main",
+            "bod-map-editor=src.bod_map_editor:main",
         ],
     },
 )

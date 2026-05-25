@@ -1,7 +1,7 @@
 BATTLE OF DOTS
 =====
 
-BATTLE OF DOTS is a LAN RTS war game, a simple barebones war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots .
+BATTLE OF DOTS is a LAN RTS war game, a war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots and then we developed this : https://github.com/Keruki2005/battle-of-dots . Here you can find our experimental scripts that will lateron be pushed to our main repo.
 
 
 Feel free to start issues.
@@ -19,8 +19,8 @@ TODO
 | 9  | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |?
 | 1  | Use NumPy better                    | Performance optimizations                                                                                               |?
 | 10  | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |under development
-| 8  | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |?
-| 7  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |?
+| 8  | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |done
+| 7  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |done
 | 7  | Save & load game state              | Checkpoints, save files                                                                                                 |?
 | 4  | More visual features                | UI/UX improvements, effects                                                                                             |?
 | 4  | More Units                          | Tanks, Fast Tanks, Infantry, Light Radar Infantry                                                                       |?
@@ -33,32 +33,35 @@ TODO
 Installation:
 =====================
 
-`pipx install git+https://github.com/Keruki2005/battle-of-dots.git`
+`pipx install git+https://github.com/Keruki2005/battle-of-dots-experimental.git`
 
 Make sure you have [pipx](https://github.com/pypa/pipx) installed.
 
-Run with `bod` in the terminal.
+Run with `bode` in the terminal.
 
 INSTRUCTIONS TO PLAY (old)
 =====================
- - start server and enter number of players (run bod_server.py)
+ - start server and enter number of players (run bode_server.py)
  - enter port, just enter 0, use other numbers when you think other people are playing the game on the same lan/router/network
  - should say waiting for players, will connect with first `PLAYERS` (number of players you entered) number of clients
- - start the clients (bod_client.py)
+ - start the clients (bode_client.py)
  - on each client type in the ip address then the port number you typed in the server (e.g. '0')
  - start playing when the pygame window pops up by pressing `p` to unpause, have fun!
 
 INSTRUCTIONS TO PLAY (new)
 =====================
-- run ´bod´ in your terminal
-# - if you want to host a game, press ´1´
-- enter number of players
-- enter port to use (i.e. port 2)
-- wait for players to connect
-# -if you want to join a game, press ´2´
-- enter the ip-address of your host
-- enter the port, your host uses
-- start playing
+- run `bode` in your terminal
+- **server (1)**: enter number of players, choose random map or a saved map, enter port, wait for players
+- **client (2)**: enter host IP and port, start playing
+- **map editor (3)**: paint terrain, place cities, save maps to the `maps/` folder, then host with option 2
+
+Map editor controls
+======
+- Keys 1–7: water, plains, hill, mountain, forest, clear forest, place/remove city
+- Left-drag: paint | Right-drag: pan | Scroll: zoom
+- `G`: generate random island | `S`: save | `[` `]`: brush size | `Esc`: quit
+
+Saved maps are stored in `maps/*.json` and can be selected when hosting a server.
 
 
 Controls

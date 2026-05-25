@@ -1,8 +1,7 @@
 BATTLE OF DOTS
 =====
 
-BATTLE OF DOTS is a LAN RTS war game, a war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots and then we developed this : https://github.com/Keruki2005/battle-of-dots . Here you can find our experimental scripts that will lateron be pushed to our main repo.
-
+BATTLE OF DOTS is a LAN RTS war game, a war simulation built in python with pygame. Original credit goes to https://warofdots.net/ and as this is a fork to https://github.com/gamepycoder/War-of-dots.
 
 Feel free to start issues.
 Feel free to contribute.
@@ -33,24 +32,24 @@ TODO
 Installation:
 =====================
 
-`pipx install git+https://github.com/Keruki2005/battle-of-dots-experimental.git`
+`pipx install git+https://github.com/Keruki2005/battle-of-dots.git`
 
 Make sure you have [pipx](https://github.com/pypa/pipx) installed.
 
-Run with `bode` in the terminal.
+Run with `bod` in the terminal.
 
 INSTRUCTIONS TO PLAY (old)
 =====================
- - start server and enter number of players (run bode_server.py)
+ - start server and enter number of players (run bod_server.py)
  - enter port, just enter 0, use other numbers when you think other people are playing the game on the same lan/router/network
  - should say waiting for players, will connect with first `PLAYERS` (number of players you entered) number of clients
- - start the clients (bode_client.py)
+ - start the clients (bod_client.py)
  - on each client type in the ip address then the port number you typed in the server (e.g. '0')
  - start playing when the pygame window pops up by pressing `p` to unpause, have fun!
 
 INSTRUCTIONS TO PLAY (new)
 =====================
-- run `bode` in your terminal
+- run `bod` in your terminal
 - **server (1)**: enter number of players, choose random map or a saved map, enter port, wait for players
 - **client (2)**: enter host IP and port, start playing
 - **map editor (3)**: paint terrain, place cities, save maps to the `maps/` folder, then host with option 2

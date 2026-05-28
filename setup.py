@@ -21,7 +21,8 @@ setup(
         'pygame-ce',
         'orjson',
         'perlin-noise',
-        'numpy'
+        'numpy',
+        'setuptools'
     ],
     entry_points={
         "console_scripts": [

@@ -2,3 +2,4 @@ pygame-ce
 orjson
 perlin-noise
 numpy
+setuptools

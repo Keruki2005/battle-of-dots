@@ -10,19 +10,19 @@ TODO
 ====
 | Priority    | Task                                | Details / Examples                                                                                             | Status  | 
 |-------------|-------------------------------------|----------------------------------------------------------------------------------------------------------------|---------|
-| 3  | Send global stats to client         | `{"cities owned":[# per player], "troops owned":[# per player], "total damage":[# per player], "current winner": <id>}` |?
-| 3  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}`          |?
-| 3  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}`                                                   |?
+| 3  | Send global stats to client         | `{"cities owned":[# per player], "troops owned":[# per player], "total damage":[# per player], "current winner": <id>}` |done
+| 3  | Send troop stats to client          | `{"terrain on": <value>, "number of attackers": <count>, "attacking dir":[<dir xy, dist, offset of closest>]}`          |done
+| 3  | Send city stats to client           | `{"timer": <current>, "timer target": <target>, "produced":[so far]}`                                                   |done
 | 4  | Win condition & client UI           | Client continuously reads `current winner` and displays final result                                                    |?
-| 9  | Playtest & refine constants         | Balancing through playtesting                                                                                           |?
-| 9  | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |?
+| 9  | Playtest & refine constants         | Balancing through playtesting                                                                                           |Planned
+| 9  | Add strategy information            | e.g., recommended moves, AI heuristics                                                                                  |maybe later
 | 1  | Use NumPy better                    | Performance optimizations                                                                                               |?
-| 10  | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |under development
+| 10 | Improve robustness to internet      | Reconnect, lag-tolerance, state-sync                                                                                    |under development
 | 8  | Map making / editor                 | GUI editor, procedural generators, seed saving                                                                          |done
 | 7  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |done
-| 7  | Save & load game state              | Checkpoints, save files                                                                                                 |?
-| 4  | More visual features                | UI/UX improvements, effects                                                                                             |?
-| 4  | More Units                          | Tanks, Fast Tanks, Infantry, Light Radar Infantry                                                                       |?
+| 7  | Save & load game state              | Checkpoints, save files                                                                                                 |halfway
+| 4  | More visual features                | UI/UX improvements, effects                                                                                             |halfway
+| 4  | More Units                          | Tanks, Fast Tanks, Infantry, Light Radar Infantry                                                                       |in discussion
                                
 
 (just edit to add suggestions)

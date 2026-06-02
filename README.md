@@ -22,7 +22,7 @@ TODO
 | 7  | Save seed + city layout             | Export/import seeds and layouts                                                                                         |done
 | 7  | Save & load game state              | Checkpoints, save files                                                                                                 |halfway
 | 4  | More visual features                | UI/UX improvements, effects                                                                                             |halfway
-| 4  | More Units                          | Tanks, Fast Tanks, Infantry, Light Radar Infantry                                                                       |in discussion
+| 4  | More Units                          | Tanks, Fast Tanks, Infantry                                                                                             |done
                                
 
 (just edit to add suggestions)

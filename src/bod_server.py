@@ -47,6 +47,8 @@ from src.bod_constants import (
     TROOP_BORDER_RADIUS,
     TROOP_HEALTH,
     TROOP_VISIBILITY_RADIUS,
+    DEFAULT_UNIT_TYPE,
+    UNIT_TYPES,
     Coordinate,
     TerrainType,
 )
@@ -163,13 +165,20 @@ class Troop:
     position: Coordinate
     owner: object
     path: list = None
-    health: int = TROOP_HEALTH
+    unit_type: str = DEFAULT_UNIT_TYPE
+    health: int = None
 
     def __post_init__(self) -> None:
         """Initializes the troop's ID and path if not set."""
         if self.path is None:
             self.path = []
+        if self.health is None:
+            self.health = UNIT_TYPES[self.unit_type].health
         self.id = id(self)
+
+    @property
+    def stats(self) -> object:
+        return UNIT_TYPES[self.unit_type]
 
 
 @dataclass
@@ -179,6 +188,7 @@ class City:
     position: Coordinate
     timer: int = 0
     owner: object = None
+    production_type: str = DEFAULT_UNIT_TYPE
 
     def __post_init__(self) -> None:
         """Initializes the city's ID and path."""
@@ -198,7 +208,7 @@ class Player:
             environment (_type_): The environment object that contains default vision data
         """
         self.start_pos = start_pos
-        self.troops = [Troop(self.start_pos, self)]
+        self.troops = [Troop(self.start_pos, self, unit_type=DEFAULT_UNIT_TYPE)]
         self.border = nd_zeros()
         self.vision = environment.default_vision.copy()
 
@@ -504,6 +514,9 @@ class Environment:
                 c.id,
                 c.path,
                 self.players.index(c.owner) if c.owner is not None else -1,
+                c.production_type,
+                c.timer,
+                self._city_spawn_target(c),
             )
             for c in self.cities
         ]
@@ -526,10 +539,20 @@ class Environment:
                         troop.path,
                         troop.health,
                         troop.attacking,
+                        troop.unit_type,
                     )
                 )
 
         return vision_grid, border_grid, troops, cities
+
+    def _city_spawn_target(self, city: City) -> int:
+        if city.owner is None:
+            return 0
+        unit = UNIT_TYPES[city.production_type]
+        t_per_c = len(city.owner.troops) / max(
+            1, len([c for c in self.cities if c.owner == city.owner])
+        )
+        return int(SERVER_FPS * unit.gen_rate * max(1, t_per_c))
 
     def get_terrain_info(self) -> tuple[np.ndarray, np.ndarray, list, int]:
         """Gets the terrain and forest grids, list of city positions, and number of players for the world.
@@ -695,8 +718,9 @@ class Environment:
         else:
             healing_power = NO_CITY_HEALING
         troop.health += healing_power / HEALING_DIVISOR
-        if troop.health > TROOP_HEALTH:
-            troop.health = TROOP_HEALTH
+        max_health = troop.stats.health
+        if troop.health > max_health:
+            troop.health = max_health
 
     def _move_troop_to_target(
         self,
@@ -719,7 +743,7 @@ class Environment:
             tuple[Coordinate, list, TerrainType]: The new position of the troop, the updated list of enemies in range, and the terrain type the troop is now on.
         """
         target = Coordinate(*troop.path[0])
-        terrain_speed = on_terrain.speed_mod
+        terrain_speed = on_terrain.speed_mod * troop.stats.speed_mod
         dir, distance = xy_to_dir_dis((target.x - old_pos.x, target.y - old_pos.y))
         distance = terrain_speed * TERRAIN_SPEED_MOD
         new_off_x, new_off_y = dir_dis_to_xy(dir, distance)
@@ -857,7 +881,7 @@ class Environment:
             on_terrain (TerrainType): The terrain type the troop is on
         """
         if enemies_in_range:
-            attack_power = on_terrain.attack_mod / 25
+            attack_power = on_terrain.attack_mod * troop.stats.attack_mod / 25
             closest = min(enemies_in_range, key=lambda x: x[1])
             closest[0].health -= attack_power
         troop.attacking = bool(enemies_in_range)
@@ -892,21 +916,32 @@ class Environment:
                 self.players_in_cities[_i].append(troop.owner)
                 break
 
-    def update_cities(self, paths_to_apply: list) -> None:
+    def update_cities(
+        self, paths_to_apply: list, production_commands: list | None = None
+    ) -> None:
         """Updates the ownership and troop production of cities
         based on the players currently in the cities and the paths to apply for each city.
 
         Args:
             paths_to_apply (list): A list of tuples (city_id, path) to apply to each city
+            production_commands (list): A list of tuples (city_id, unit_type) to set production
         """
+        if production_commands is None:
+            production_commands = []
         city_ids = [info[0] for info in paths_to_apply]
         city_paths = [info[1] for info in paths_to_apply]
+        production_by_id = {cmd[0]: cmd[1] for cmd in production_commands}
         for i, city in enumerate(self.cities):
             try:
                 cidx = city_ids.index(id(city))
                 city.path = city_paths[cidx]
             except ValueError:
                 pass
+            if city.id in production_by_id:
+                unit_type = production_by_id[city.id]
+                if unit_type in UNIT_TYPES and city.owner is not None:
+                    city.production_type = unit_type
+                    city.timer = 0
             cx, cy = city.position
             last_owner = city.owner
             if len(self.players_in_cities[i]) == 1:
@@ -914,15 +949,14 @@ class Environment:
             if last_owner is not city.owner:
                 city.timer = 0
                 city.path = []
+                city.production_type = DEFAULT_UNIT_TYPE
             if city.owner is not None:
                 city.timer += 1
                 t_per_c = len(city.owner.troops) / len(
                     [c for c in self.cities if c.owner == city.owner]
                 )
-                if (
-                    city.timer >= (SERVER_FPS * (CITY_TROOP_GEN_RATE * max(1, t_per_c)))
-                    and t_per_c < CITY_TROOP_CAPACITY
-                ):
+                spawn_target = self._city_spawn_target(city)
+                if city.timer >= spawn_target and t_per_c < CITY_TROOP_CAPACITY:
                     city.owner.troops.append(
                         Troop(
                             Coordinate(
@@ -931,6 +965,7 @@ class Environment:
                             ),
                             city.owner,
                             city.path.copy(),
+                            unit_type=city.production_type,
                         )
                     )
                     city.timer = 0
@@ -951,6 +986,7 @@ class Game:
         self.environment = Environment(map_data=map_data)
         self.player_inputs = [[] for i in range(world_info.players)]
         self.player_city_inputs = [[] for i in range(world_info.players)]
+        self.player_production_inputs = [[] for i in range(world_info.players)]
         self.player_pause_requests = [
             threading.Event() for i in range(world_info.players)
         ]
@@ -1082,6 +1118,10 @@ class Game:
                         else:
                             self.player_inputs[player_number].extend(player_in[0])
                             self.player_city_inputs[player_number].extend(player_in[1])
+                            if len(player_in) > 2:
+                                self.player_production_inputs[player_number].extend(
+                                    player_in[2]
+                                )
             except Exception as e:
                 print("Error handling player: ", player_number, e)
                 self.server.close(conn)
@@ -1091,11 +1131,21 @@ class Game:
         """Processes the game logic for each frame,
         updates city ownership and troop movements based on player inputs."""
         city_paths_to_apply = []
+        production_commands = []
         for p_num in range(world_info.players):
             if self.player_city_inputs[p_num]:
                 city_paths_to_apply.extend(self.player_city_inputs[p_num])
+            if self.player_production_inputs[p_num]:
+                player = self.environment.players[p_num]
+                owned_city_ids = {
+                    c.id for c in self.environment.cities if c.owner is player
+                }
+                for city_id, unit_type in self.player_production_inputs[p_num]:
+                    if city_id in owned_city_ids and unit_type in UNIT_TYPES:
+                        production_commands.append((city_id, unit_type))
         self.player_city_inputs = [[] for i in range(world_info.players)]
-        self.environment.update_cities(city_paths_to_apply)
+        self.player_production_inputs = [[] for i in range(world_info.players)]
+        self.environment.update_cities(city_paths_to_apply, production_commands)
         paths_to_apply = []
         for p_num in range(world_info.players):
             if self.player_inputs[p_num]:

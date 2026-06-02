@@ -100,3 +100,39 @@ CITY_TROOP_CAPACITY = 10
 CITY_TROOP_GEN_RATE = 20
 
 SERVER_FPS = 45
+
+
+class UnitType:
+    def __init__(
+        self,
+        name: str,
+        health: int,
+        radius: int,
+        speed_mod: float,
+        attack_mod: float,
+        gen_rate: float,
+    ):
+        self.name = name
+        self.health = health
+        self.radius = radius
+        self.speed_mod = speed_mod
+        self.attack_mod = attack_mod
+        self.gen_rate = gen_rate
+
+
+INFANTRY = UnitType("infantry", 60, 7, 1.5, 0.7, 12)
+FAST_TANK = UnitType("fast_tank", 80, 7, 1.0, 1.8, 25)
+TANK = UnitType("tank", 150, 7, 0.6, 2.0, 30)
+
+UNIT_TYPES = {
+    INFANTRY.name: INFANTRY,
+    FAST_TANK.name: FAST_TANK,
+    TANK.name: TANK,
+}
+DEFAULT_UNIT_TYPE = INFANTRY.name
+UNIT_TYPE_ORDER = [INFANTRY.name, FAST_TANK.name, TANK.name]
+UNIT_TYPE_LABELS = {
+    INFANTRY.name: "Infantry",
+    FAST_TANK.name: "Fast Tank",
+    TANK.name: "Tank",
+}

@@ -22,9 +22,12 @@ from src.bod_constants import (
     TERRAIN_TYPES,
     FOREST,
     TROOP_D,
-    TROOP_HEALTH,
     TROOP_R,
     WATER,
+    UNIT_TYPES,
+    UNIT_TYPE_ORDER,
+    UNIT_TYPE_LABELS,
+    DEFAULT_UNIT_TYPE,
 )
 import src.bod_simple_socket
 
@@ -366,6 +369,10 @@ class Game:
         self.drawing_path = False
         self.city_paths = []
         self.drawing_city_path = False
+        self.pending_city_click = None
+        self.production_menu_city = None
+        self.production_menu_rects = {}
+        self.click_drag_threshold = 8
 
         self.pause = True
 
@@ -464,7 +471,7 @@ class Game:
                     self.handle_paused_key_down(e)
 
         self.client.send(orjson.dumps(self.player_input))
-        self.player_input = [[], []]
+        self.player_input = [[], [], []]
 
     def handle_mouse_down(self, e: pygame.event.Event) -> None:
         """Handles mouse button down events for starting camera panning or selecting troops and cities.
@@ -487,15 +494,21 @@ class Game:
         """
         mx, my = e.pos[0], e.pos[1]
 
+        if self.handle_production_menu_click(mx, my):
+            return
+
         # Try to select a troop
         best = self.find_troop_at_click(mx, my)
         if best is not None:
+            self.production_menu_city = None
             self.start_troop_path(best, mx, my)
         else:
             # Try to select a city
             best_city = self.find_city_at_click(mx, my)
             if best_city is not None:
-                self.start_city_path(best_city, mx, my)
+                self.pending_city_click = (best_city, mx, my, self.best_city_pos)
+            else:
+                self.production_menu_city = None
 
     def find_troop_at_click(self, mx: int, my: int) -> int:
         """Finds a troop at the given screen coordinates.
@@ -512,14 +525,16 @@ class Game:
         best = None
         best_dist2 = None
 
-        for pos, tid, owner, path, health, attacking in troops:
+        for pos, tid, owner, path, health, attacking, unit_type in troops:
             if owner == self.player_num:
+                unit_r = UNIT_TYPES.get(unit_type, UNIT_TYPES[DEFAULT_UNIT_TYPE]).radius
+                r = max(1, int(unit_r * self.zoom))
                 sx = int((pos[0] - self.camx) * self.zoom)
                 sy = int((pos[1] - self.camy) * self.zoom)
                 dx = mx - sx
                 dy = my - sy
                 d2 = dx * dx + dy * dy
-                if d2 <= r_s * r_s:
+                if d2 <= (r * 2) * (r * 2):
                     if best is None or d2 < best_dist2:
                         self.best_troop_pos = pos
                         best = tid
@@ -540,7 +555,7 @@ class Game:
         best_city = None
         best_dist2 = None
 
-        for pos, cid, path, owner in cities:
+        for pos, cid, path, owner, production_type, timer, timer_max in cities:
             if owner == self.player_num:
                 sx = int((pos[0] - self.camx) * self.zoom)
                 sy = int((pos[1] - self.camy) * self.zoom)
@@ -612,6 +627,10 @@ class Game:
         if e.button == 3:
             self.panning = False
         if e.button == 1:
+            if self.pending_city_click and not self.drawing_city_path:
+                cid, start_mx, start_my, city_pos = self.pending_city_click
+                self.production_menu_city = cid
+            self.pending_city_click = None
             self.drawing_path = False
             self.drawing_city_path = False
 
@@ -624,6 +643,15 @@ class Game:
             self.extend_troop_path(e.pos)
         elif self.drawing_city_path:
             self.extend_city_path(e.pos)
+        elif self.pending_city_click:
+            cid, start_mx, start_my, city_pos = self.pending_city_click
+            mx, my = e.pos
+            dx = mx - start_mx
+            dy = my - start_my
+            if dx * dx + dy * dy > self.click_drag_threshold * self.click_drag_threshold:
+                self.production_menu_city = None
+                self.start_city_path(cid, start_mx, start_my)
+                self.pending_city_click = None
         elif self.panning:
             self.pan_camera(e.pos)
 
@@ -693,6 +721,9 @@ class Game:
         if e.key == pygame.K_c:
             self.paths = []
             self.city_paths = []
+            self.production_menu_city = None
+        elif e.key == pygame.K_ESCAPE:
+            self.production_menu_city = None
         elif e.key == pygame.K_SPACE:
             self.submit_paths()
         elif e.key == pygame.K_p:
@@ -722,6 +753,75 @@ class Game:
         if e.key == pygame.K_p:
             self.player_input = "unpause"
             self.pause = False
+
+    def get_city_data(self, city_id: int) -> tuple | None:
+        for city in self.draw_info[3]:
+            if city[1] == city_id:
+                return city
+        return None
+
+    def handle_production_menu_click(self, mx: int, my: int) -> bool:
+        if self.production_menu_city is None:
+            return False
+        for unit_type, rect in self.production_menu_rects.items():
+            if rect.collidepoint(mx, my):
+                cmd = (self.production_menu_city, unit_type)
+                if isinstance(self.player_input, list):
+                    self.player_input[2].append(cmd)
+                else:
+                    self.player_input = [[], [], [cmd]]
+                return True
+        return False
+
+    def draw_production_menu(self, cities: list) -> None:
+        if self.production_menu_city is None:
+            self.production_menu_rects = {}
+            return
+
+        city_data = self.get_city_data(self.production_menu_city)
+        if city_data is None:
+            return
+
+        position, cid, path, owner, production_type, timer, timer_max = city_data
+        if owner != self.player_num:
+            return
+
+        sx = int((position[0] - self.camx) * self.zoom)
+        sy = int((position[1] - self.camy) * self.zoom)
+        menu_x = sx + 20
+        menu_y = sy - 10
+        button_w, button_h, gap = 110, 24, 4
+        menu_h = len(UNIT_TYPE_ORDER) * (button_h + gap) + 28
+        menu_w = button_w + 16
+
+        menu_x = max(8, min(menu_x, self.size[0] - menu_w - 8))
+        menu_y = max(8, min(menu_y, self.size[1] - menu_h - 8))
+
+        panel = pygame.Rect(menu_x, menu_y, menu_w, menu_h)
+        pygame.draw.rect(self.screen, (30, 30, 30, 220), panel)
+        pygame.draw.rect(self.screen, (200, 200, 200), panel, 2)
+
+        font = pygame.font.SysFont(None, 20)
+        title = font.render("Produce", True, (240, 240, 240))
+        self.screen.blit(title, (menu_x + 8, menu_y + 6))
+
+        self.production_menu_rects = {}
+        for i, unit_type in enumerate(UNIT_TYPE_ORDER):
+            stats = UNIT_TYPES[unit_type]
+            label = UNIT_TYPE_LABELS[unit_type]
+            by = menu_y + 28 + i * (button_h + gap)
+            rect = pygame.Rect(menu_x + 8, by, button_w, button_h)
+            selected = unit_type == production_type
+            bg = (70, 110, 70) if selected else (55, 55, 55)
+            pygame.draw.rect(self.screen, bg, rect)
+            pygame.draw.rect(self.screen, (180, 180, 180), rect, 1)
+            text = font.render(
+                f"{label} ({int(stats.gen_rate)}s)",
+                True,
+                (255, 255, 255),
+            )
+            self.screen.blit(text, (rect.x + 6, rect.y + 4))
+            self.production_menu_rects[unit_type] = rect
 
     def zoom_in_at(self, screen_pos: tuple[int, int]) -> None:
         """Zooms in at a specific screen position.
@@ -820,6 +920,7 @@ class Game:
 
         self.screen.blit(dynamic, (offset_x, offset_y))
         self.screen.blit(fog, (offset_x, offset_y))
+        self.draw_production_menu(cities)
 
     def update_draw_info(self) -> None:
         """Updates the draw_info attribute with data received from the client."""
@@ -862,12 +963,16 @@ class Game:
             dynamic (pygame.Surface): The dynamic surface to draw on.
             z (float): The zoom level.
         """
-        for position, cid, path, owner in cities:
+        for position, cid, path, owner, production_type, timer, timer_max in cities:
             if path and owner == self.player_num:
                 path.insert(0, position)
                 self.city_paths_to_draw.append(path)
             if owner >= 0:
                 self.draw_city(COLORS[owner], position, dynamic, z)
+                if owner == self.player_num and timer_max > 0:
+                    self.draw_city_production_bar(
+                        position, timer, timer_max, production_type, dynamic, z
+                    )
 
     def draw_city(
         self, color: tuple, position: tuple, dynamic: pygame.Surface, z: float
@@ -897,22 +1002,72 @@ class Game:
         pygame.draw.polygon(dynamic, flag_color, [p1, p2, p3])
         pygame.draw.polygon(dynamic, (0, 0, 0), [p1, p2, p3], max(1, int(1 * z)))
 
+    def draw_city_production_bar(
+        self,
+        position: tuple,
+        timer: int,
+        timer_max: int,
+        production_type: str,
+        dynamic: pygame.Surface,
+        z: float,
+    ) -> None:
+        px = int(position[0] * z)
+        py = int(position[1] * z)
+        bar_w = max(4, int(24 * z))
+        bar_h = max(2, int(4 * z))
+        progress = min(1.0, timer / max(1, timer_max))
+        bar_x = px - bar_w // 2
+        bar_y = py + max(2, int(8 * z))
+        pygame.draw.rect(
+            dynamic, (40, 40, 40), pygame.Rect(bar_x, bar_y, bar_w, bar_h)
+        )
+        pygame.draw.rect(
+            dynamic,
+            (200, 200, 80),
+            pygame.Rect(bar_x, bar_y, int(bar_w * progress), bar_h),
+        )
+
+    def draw_troop_shape(
+        self,
+        dynamic: pygame.Surface,
+        unit_type: str,
+        px: int,
+        py: int,
+        r: int,
+        color: tuple,
+    ) -> None:
+        if unit_type == "tank":
+            rect = pygame.Rect(px - r, py - r, r * 2, r * 2)
+            pygame.draw.rect(dynamic, color, rect)
+            pygame.draw.rect(dynamic, (0, 0, 0), rect, max(1, r // 4))
+        elif unit_type == "fast_tank":
+            points = [
+                (px, py - r),
+                (px + r, py + r),
+                (px - r, py + r),
+            ]
+            pygame.draw.polygon(dynamic, color, points)
+            pygame.draw.polygon(dynamic, (0, 0, 0), points, max(1, r // 4))
+        else:
+            pygame.draw.circle(dynamic, color, (px, py), r)
+
     def draw_troops(self, troops: list, dynamic: pygame.Surface, z: float) -> None:
         """Draws troops on the dynamic surface.
 
         Args:
-            troops (list): List of troop data (position, tid, owner, path, health).
+            troops (list): List of troop data (position, tid, owner, path, health, attacking, unit_type).
             dynamic (pygame.Surface): The dynamic surface to draw on.
             z (float): The zoom level.
         """
         tids = [tid for tid, path in self.paths]
-        for pos, tid, owner, path, health, attacking in troops:
+        for pos, tid, owner, path, health, attacking, unit_type in troops:
             off_x, off_y = (0, 0)
             if attacking:
                 off_x, off_y = dir_dis_to_xy(random.randrange(0, 360, 5), 1)
             px = int((pos[0] + off_x) * z)
             py = int((pos[1] + off_y) * z)
-            r = max(1, int(TROOP_R * z))
+            unit_stats = UNIT_TYPES.get(unit_type, UNIT_TYPES[DEFAULT_UNIT_TYPE])
+            r = max(1, int(unit_stats.radius * z))
             color = COLORS[owner]
             rgb = color
 
@@ -922,17 +1077,18 @@ class Game:
             if path and owner == self.player_num:
                 path.insert(0, pos)
                 self.troop_paths_to_draw.append(path)
+            max_health = unit_stats.health
             pygame.draw.rect(
                 dynamic,
                 (0, 255, 0),
                 pygame.rect.Rect(
                     px - r,
                     (py - r) - max(1, int(3 * z)),
-                    (r * 2) * (health / TROOP_HEALTH),
+                    (r * 2) * (health / max_health),
                     max(1, int(3 * z)),
                 ),
             )
-            pygame.draw.circle(dynamic, rgb, (px, py), r)
+            self.draw_troop_shape(dynamic, unit_type, px, py, r, rgb)
 
     def draw_city_paths(self, dynamic: pygame.Surface, z: float) -> None:
         """Draws city paths on the dynamic surface.
@@ -1056,4 +1212,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

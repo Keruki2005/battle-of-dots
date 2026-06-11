@@ -1203,7 +1203,7 @@ class Game:
 def main():
     while True:
         try:
-            game_play = Game("WAR OF DOTS")
+            game_play = Game("BATTLE OF DOTS")
             game_play.run_game()
         except Exception as e:
             print(f"an error occurred: {e}")
